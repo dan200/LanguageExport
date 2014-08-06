@@ -6,8 +6,8 @@ using System.Text;
 
 namespace Dan200.Tools.LanguageExport
 {
-	class Program
-	{
+    class Program
+    {
         public static void PrintUsage()
         {
             Console.WriteLine( "Usage:" );
@@ -31,12 +31,12 @@ namespace Dan200.Tools.LanguageExport
         {
             char separator = ',';
             List<string> parsed = new List<string>();
-            string[] temp = line.Split(separator);
+            string[] temp = line.Split( separator );
             int counter = 0;
             while( counter < temp.Length )
             {
                 string data = temp[ counter ];
-                if( data.StartsWith("\"") )
+                if( data.StartsWith( "\"" ) )
                 {
                     while( !data.EndsWith( "\"" ) )
                     {
@@ -51,8 +51,8 @@ namespace Dan200.Tools.LanguageExport
             return parsed.ToArray();
         }
 
-		public static void Main( string[] args )
-		{
+        public static void Main( string[] args )
+        {
             // Parse the program arguments
             if( args.Length != 2 )
             {
@@ -67,76 +67,76 @@ namespace Dan200.Tools.LanguageExport
             {
                 Console.WriteLine( "Connecting to {0}", exportURL );
                 var csvRequest = HttpWebRequest.Create( exportURL );
-    			using( var csvResponse = csvRequest.GetResponse() )
-    			{
-    				using( var responseStream = csvResponse.GetResponseStream() )
-    				{
-    					var reader = new StreamReader( responseStream, Encoding.UTF8 );
-    					try
-    					{
+                using( var csvResponse = csvRequest.GetResponse() )
+                {
+                    using( var responseStream = csvResponse.GetResponseStream() )
+                    {
+                        var reader = new StreamReader( responseStream, Encoding.UTF8 );
+                        try
+                        {
                             // Get the names of all the languages from the first row
-    						string firstLine = reader.ReadLine();
-    						string[] languages = ParseCSVRow( firstLine );
-    						TextWriter[] writers = new TextWriter[ languages.Length ];
-    						for( int i=1; i<languages.Length; ++i )
-    						{
-                                string languageCode = languages[i];
+                            string firstLine = reader.ReadLine();
+                            string[] languages = ParseCSVRow( firstLine );
+                            TextWriter[] writers = new TextWriter[ languages.Length ];
+                            for( int i = 1; i < languages.Length; ++i )
+                            {
+                                string languageCode = languages[ i ];
                                 if( languageCode.Length > 0 )
                                 {
                                     Console.WriteLine( "Found language {0}", languageCode );
-                                    writers[i] = new StreamWriter( Path.Combine( outputPath, string.Format( "{0}.lang", languageCode ) ) );
-                                    writers[i].WriteLine( "// {0} Translations", languageCode );
+                                    writers[ i ] = new StreamWriter( Path.Combine( outputPath, string.Format( "{0}.lang", languageCode ) ) );
+                                    writers[ i ].WriteLine( "// {0} Translations", languageCode );
                                 }
-    						}
+                            }
 
                             // Get the actual translations from the rest of the rows
-    						try
-    						{
-    							string line;
-    							while( (line = reader.ReadLine()) != null )
-    							{
-    								string[] translations = ParseCSVRow( line );
-    								if( translations.Length > 0 && translations[0].Length > 0 )
-    								{
-    									string symbol = translations[0];
-    									for( int i=1; i<languages.Length; ++i )
-    									{
-                                            if( i < translations.Length && translations[i].Length > 0 )
-    										{
-                                                if( writers[i] != null )
-                                                {
-        											writers[i].WriteLine( "{0}={1}", symbol, translations[i] );
-                                                }
-    										}
-    									}
-    								}
-    							}
-    						}
-    						finally
-    						{
-    							for( int i=1; i<languages.Length; ++i )
-    							{
-                                    if( writers[i] != null )
+                            try
+                            {
+                                string line;
+                                while( (line = reader.ReadLine()) != null )
+                                {
+                                    string[] translations = ParseCSVRow( line );
+                                    if( translations.Length > 0 && translations[ 0 ].Length > 0 )
                                     {
-        								writers[i].Close();
+                                        string symbol = translations[ 0 ];
+                                        for( int i = 1; i < languages.Length; ++i )
+                                        {
+                                            if( i < translations.Length && translations[ i ].Length > 0 )
+                                            {
+                                                if( writers[ i ] != null )
+                                                {
+                                                    writers[ i ].WriteLine( "{0}={1}", symbol, translations[ i ] );
+                                                }
+                                            }
+                                        }
                                     }
-    							}
-    						}
+                                }
+                            }
+                            finally
+                            {
+                                for( int i = 1; i < languages.Length; ++i )
+                                {
+                                    if( writers[ i ] != null )
+                                    {
+                                        writers[ i ].Close();
+                                    }
+                                }
+                            }
 
                             // Finish
                             Console.WriteLine( "All languages exported" );
-    					}
-    					finally
-    					{
-    						reader.Close();
-    					}
-    				}
-    			}
+                        }
+                        finally
+                        {
+                            reader.Close();
+                        }
+                    }
+                }
             }
             catch( Exception e )
             {
                 Console.WriteLine( "{0}: {0}", e.GetType().Name, e.Message );
             }
-		}
-	}
+        }
+    }
 }
