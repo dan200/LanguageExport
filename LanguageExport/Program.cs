@@ -11,7 +11,7 @@ namespace Dan200.Tools.LanguageExport
         public static void PrintUsage()
         {
             Console.WriteLine( "Usage:" );
-            Console.WriteLine( "LanguageExport <google spreadsheet url> <output folder>" );
+            Console.WriteLine( "LanguageExport.exe <google spreadsheet url> <output folder>" );
         }
 
         public static string GetExportURL( string inputURL )
@@ -85,7 +85,7 @@ namespace Dan200.Tools.LanguageExport
                                 {
                                     Console.WriteLine( "Found language {0}", languageCode );
                                     writers[ i ] = new StreamWriter( Path.Combine( outputPath, string.Format( "{0}.lang", languageCode ) ) );
-                                    writers[ i ].WriteLine( "// {0} Translations", languageCode );
+                                    writers[ i ].WriteLine( "// {0} translations", languageCode );
                                 }
                             }
 
