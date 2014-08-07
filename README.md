@@ -7,6 +7,7 @@ How to install
 ==============
 
 Build the Visual Studio project, or just grab LanguageExport.exe from the Precompiled directory.
+Don't have .NET or Mono installed? [Eydamos has written a Java version!](https://github.com/Eydamos/LanguageExport)
 
 How to use
 ==========
