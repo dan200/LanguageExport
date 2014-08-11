@@ -11,7 +11,7 @@ namespace Dan200.Tools.LanguageExport
         public static void PrintUsage()
         {
             Console.WriteLine( "Usage:" );
-            Console.WriteLine( "LanguageExport.exe <google spreadsheet url> <output folder>" );
+            Console.WriteLine( "LanguageExport.exe <google spreadsheet url> <output folder> [language code]+" );
         }
 
         public static string GetExportURL( string inputURL )
@@ -54,13 +54,23 @@ namespace Dan200.Tools.LanguageExport
         public static void Main( string[] args )
         {
             // Parse the program arguments
-            if( args.Length != 2 )
+            if( args.Length < 2 )
             {
                 PrintUsage();
                 return;
             }
             var exportURL = GetExportURL( args[ 0 ] );
             var outputPath = args[ 1 ];
+
+            ISet<string> filterLanguages = null;
+            if( args.Length >= 3 )
+            {
+                filterLanguages = new HashSet<string>();
+                for( int i = 2; i < args.Length; ++i )
+                {
+                    filterLanguages.Add( args[ i ] );
+                }
+            }
 
             // Start the export
             try
@@ -81,7 +91,8 @@ namespace Dan200.Tools.LanguageExport
                             for( int i = 1; i < languages.Length; ++i )
                             {
                                 string languageCode = languages[ i ];
-                                if( languageCode.Length > 0 )
+                                if( languageCode.Length > 0 &&
+                                    (filterLanguages == null || filterLanguages.Contains( languageCode ) ) )
                                 {
                                     Console.WriteLine( "Found language {0}", languageCode );
                                     writers[ i ] = new StreamWriter( Path.Combine( outputPath, string.Format( "{0}.lang", languageCode ) ) );
