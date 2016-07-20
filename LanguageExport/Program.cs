@@ -23,7 +23,20 @@ namespace Dan200.Tools.LanguageExport
                 exportUrl.Path = Path.GetDirectoryName( url.AbsolutePath );
             }
             exportUrl.Path = exportUrl.Path + "/export";
-            exportUrl.Query = "format=csv";
+
+            var gidPos = exportUrl.Query.IndexOf( "gid=" );
+            if( gidPos >= 0 )
+            {
+                var gidEndPos = exportUrl.Query.IndexOf( "&", gidPos );
+                var gid = ( gidEndPos >= 0 ) ?
+                    exportUrl.Query.Substring( gidPos + 4, gidEndPos - (gidEndPos + 4) ) :
+                    exportUrl.Query.Substring( gidPos + 4 );
+                exportUrl.Query = "format=csv&gid=" + gid;
+            }
+            else
+            {
+                exportUrl.Query = "format=csv";
+            }
             return exportUrl.ToString();
         }
 
