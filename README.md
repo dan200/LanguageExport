@@ -20,5 +20,5 @@ How to use
 ```
 LanguageExport.exe <URL from previous step> <output folder>
 ```
-
+ 
 Your output folder will now contain .lang files with all the translations from the Spreadsheet. Re-run this tool whenever you need to update the translations in your game. Why not grant others edit access to your Spreadsheet to crowdsource your translation work?
