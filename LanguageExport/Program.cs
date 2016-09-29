@@ -70,7 +70,7 @@ namespace Dan200.Tools.LanguageExport
                             i = 0;
                             data += "\\n";
                         }
-                        data += parts[ 0 ];
+                        data += parts[ i ];
                     }
                     data = data.Substring( 1, data.Length - 2 );
                 }
@@ -173,7 +173,8 @@ namespace Dan200.Tools.LanguageExport
             }
             catch( Exception e )
             {
-                Console.WriteLine( "{0}: {0}", e.GetType().Name, e.Message );
+                Console.WriteLine( "Threw exception {0}: {1}", e.GetType().Name, e.Message );
+                Console.WriteLine( e.StackTrace );
             }
         }
     }
