@@ -40,28 +40,44 @@ namespace Dan200.Tools.LanguageExport
             return exportUrl.ToString();
         }
 
-        private static string[] ParseCSVRow( string line )
+        private static string[] ParseCSVRow( TextReader reader )
         {
-            char separator = ',';
-            List<string> parsed = new List<string>();
-            string[] temp = line.Split( separator );
-            int counter = 0;
-            while( counter < temp.Length )
+            string line;
+            if( (line = reader.ReadLine()) == null )
             {
-                string data = temp[ counter ];
-                if( data.StartsWith( "\"" ) )
+                return null;
+            }
+
+            var results = new List<string>();
+            var parts = line.Split( ',' );
+            int i = 0;
+            while( i < parts.Length )
+            {
+                string data = parts[ i ];
+                if( data.StartsWith( "\"", StringComparison.InvariantCulture ) )
                 {
-                    while( !data.EndsWith( "\"" ) )
+                    while( !data.EndsWith( "\"", StringComparison.InvariantCulture ) )
                     {
-                        data += separator.ToString();
-                        data += temp[ ++counter ];
+                        if( i < parts.Length - 1 )
+                        {
+                            i++;
+                            data += ",";
+                        }
+                        else
+                        {
+                            line = reader.ReadLine();
+                            parts = line.Split( ',' );
+                            i = 0;
+                            data += "\\n";
+                        }
+                        data += parts[ 0 ];
                     }
                     data = data.Substring( 1, data.Length - 2 );
                 }
-                parsed.Add( data );
-                counter++;
+                results.Add( data );
+                ++i;
             }
-            return parsed.ToArray();
+            return results.ToArray();
         }
 
         public static void Main( string[] args )
@@ -98,8 +114,7 @@ namespace Dan200.Tools.LanguageExport
                         try
                         {
                             // Get the names of all the languages from the first row
-                            string firstLine = reader.ReadLine();
-                            string[] languages = ParseCSVRow( firstLine );
+                            string[] languages = ParseCSVRow( reader );
                             TextWriter[] writers = new TextWriter[ languages.Length ];
                             for( int i = 1; i < languages.Length; ++i )
                             {
@@ -116,10 +131,9 @@ namespace Dan200.Tools.LanguageExport
                             // Get the actual translations from the rest of the rows
                             try
                             {
-                                string line;
-                                while( (line = reader.ReadLine()) != null )
+                                string[] translations;
+                                while( (translations = ParseCSVRow(reader)) != null )
                                 {
-                                    string[] translations = ParseCSVRow( line );
                                     if( translations.Length > 0 && translations[ 0 ].Length > 0 )
                                     {
                                         string symbol = translations[ 0 ];
