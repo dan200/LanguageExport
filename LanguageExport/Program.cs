@@ -72,8 +72,9 @@ namespace Dan200.Tools.LanguageExport
                         }
                         data += parts[ i ];
                     }
-                    data = data.Substring( 1, data.Length - 2 );
+                    data = data.Substring (1, data.Length - 2);
                 }
+                data = data.Replace ("\"\"", "\"");
                 results.Add( data );
                 ++i;
             }
